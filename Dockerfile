@@ -1,4 +1,4 @@
-FROM golang:1.19-alpine AS app
+FROM golang:1.19 AS app
 
 WORKDIR /app
 
@@ -9,6 +9,7 @@ RUN go mod download
 
 COPY . /app
 
-RUN go build -trimpath -o bin/cli /app/main.go
+RUN go build -trimpath -o bin/display_eurojackpot cmd/eurojackpot/main.go
+RUN chmod +x bin/display_eurojackpot
 
-CMD ["bin/cli"]
+CMD ["bin/display_eurojackpot"]

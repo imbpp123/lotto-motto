@@ -9,5 +9,5 @@ type NumberFileRepository struct {
 }
 
 func (nfr NumberFileRepository) LoadFromFile(filename string) (*model.NumberRowCollection, error) {
-
+	return nil, nil
 }

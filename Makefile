@@ -20,7 +20,8 @@ all: build
 
 .PHONY: build-cli
 build: dep## Build the cmd binary
-	go build -trimpath -o bin/display cmd/main.go
+	go build -trimpath -o bin/display_eurojackpot cmd/eurojackpot/main.go
+	chmod +x bin/display_eurojackpot
 
 .PHONY: dep
 dep: ## Download app dependencies
@@ -30,3 +31,6 @@ dep: ## Download app dependencies
 .PHONY: clean
 clean:
 	rm -f ./bin/*
+
+euro: 
+	docker-compose run app bin/display_eurojackpot 10 'https://www.lotto-berlin.de/static/gamebroker_7/default/download_files/archiv_eurojackpot.zip'

@@ -1,20 +1,23 @@
 package command
 
-import "github.com/imbpp123/lotto_motto/internal/lotto_number/application/loader"
+import (
+	"github.com/imbpp123/lotto_motto/internal/lotto_number/application/presentation"
+	"github.com/imbpp123/lotto_motto/internal/lotto_number/model/repository"
+)
 
 type DisplayLastRowCommand struct {
-	RowCount uint16
-	Filename string
+	RowCount uint `validate:"required,min=1"`
+	Filename string `validate:"required"`
 }
 
 type DisplayLastRowHandler struct {
-	NumberLoader       loader.NumberLoader
-	NumberPresentation presentation.NumberPresentation
+	NumberRowCollectionRepository repository.NumberRowCollectionRepository
+	NumberPresentation presentation.NumberRowCollectionPresentation
 }
 
 // displays table of numbers from lotto
 func (h *DisplayLastRowHandler) Handle(cmd DisplayLastRowCommand) error {
-	collection, err := h.NumberLoader.load(cmd.Filename)
+	collection, err := h.NumberRowCollectionRepository.LoadFromFile(cmd.Filename)
 	if err != nil {
 		return err
 	}
@@ -22,4 +25,6 @@ func (h *DisplayLastRowHandler) Handle(cmd DisplayLastRowCommand) error {
 	collection = collection.SortByDate().Slice(0, cmd.RowCount)
 
 	h.NumberPresentation.Display(collection)
+
+	return nil
 }
