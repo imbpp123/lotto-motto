@@ -8,7 +8,7 @@ type DisplayLastRowCommand struct {
 }
 
 type DisplayLastRowHandler struct {
-	NumberLoader loader.NumberLoader
+	NumberLoader       loader.NumberLoader
 	NumberPresentation presentation.NumberPresentation
 }
 
