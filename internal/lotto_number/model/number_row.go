@@ -3,6 +3,13 @@ package model
 import "time"
 
 type NumberRow struct {
-	numbers []Number
-	date time.Time
+	Numbers []Number
+	Date time.Time
+}
+
+func NewNumberRow(rowDate time.Time, numbers ...Number) NumberRow {
+	return NumberRow{
+		numbers,
+		rowDate,
+	}
 }
