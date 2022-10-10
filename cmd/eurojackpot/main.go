@@ -1,59 +1,31 @@
-package eurojackpot
+package main
 
 import (
 	"fmt"
 	"os"
-	"strconv"
 
-	"github.com/go-playground/validator"
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/application/command"
+	infra_command "github.com/imbpp123/lotto_motto/internal/lotto_number/infrastructure/command"
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/infrastructure/model/repository"
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/infrastructure/presentation"
 )
 
-var (
-	validate *validator.Validate
-	cmd command.DisplayLastRowCommand
-)
+func main() {
+	fmt.Println("len", len(os.Args))
 
-func createCommandFromArgs() {
-	rowCount, err := strconv.ParseUint(os.Args[1], 10, 0)
+	for _, arg := range os.Args[1:] {
+		fmt.Println(arg)
+	}
+
+	// get variables from console
+	cmd, err := infra_command.CreateCommandFromArgs()
 	if err != nil {
 		panic(err)
 	}
-	filename := os.Args[2]
-
-	cmd = command.DisplayLastRowCommand{
-		RowCount: uint(rowCount),
-		Filename: filename,
+	err = infra_command.ValidateInput(cmd)
+	if err != nil {
+		panic(err)
 	}
-}
-
-func validateInput(cmd command.DisplayLastRowCommand) {
-	isFailed := false
-
-	validate := validator.New()
-	errs := validate.Var(cmd.RowCount, "required,min=1")
-	if errs != nil {
-		fmt.Println(errs) 
-		isFailed = true
-	}
-
-	errs = validate.Var(cmd.Filename, "required,url")
-	if errs != nil {
-		fmt.Println(errs) 
-		isFailed = true
-	} 
-
-	if isFailed {
-		panic("Validation failed")
-	}
-}
-
-func main() {
-	// get variables from console
-	createCommandFromArgs()
-	validateInput(cmd)
 
 	// run command
 	fileRepository := repository.NumberFileRepository{}
@@ -62,7 +34,7 @@ func main() {
 		NumberRowCollectionRepository: fileRepository,
 		NumberPresentation:            consoleTablePresentation,
 	}
-	err := handler.Handle(cmd)	
+	err = handler.Handle(cmd)	
 	if err != nil {
 		panic(err)
 	}
