@@ -26,7 +26,11 @@ func (c *NumberRowCollection) SortByDate() *NumberRowCollection {
 	return c
 }
 
-func (c *NumberRowCollection) Slice(startIndex uint, length uint) *NumberRowCollection {
+func (c *NumberRowCollection) Slice(startIndex uint, length int) *NumberRowCollection {
+	if length > len(c.rows) {
+		return c
+	}
+
 	c.rows = c.rows[0:length]
 	return c
 }

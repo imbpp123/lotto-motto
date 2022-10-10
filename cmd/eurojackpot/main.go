@@ -1,30 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"flag"
 
+	"github.com/go-playground/validator"
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/application/command"
-	infra_command "github.com/imbpp123/lotto_motto/internal/lotto_number/infrastructure/command"
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/infrastructure/model/repository"
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/infrastructure/presentation"
 )
 
 func main() {
-	fmt.Println("len", len(os.Args))
-
-	for _, arg := range os.Args[1:] {
-		fmt.Println(arg)
+	cmd := command.DisplayLastRowCommand{
+		RowCount: *flag.Uint("rows", 10, "rows to show in table"),
+		Filename: *flag.String("file", "http://example.com", "zip archive with history in CSV format"),
 	}
 
-	// get variables from console
-	cmd, err := infra_command.CreateCommandFromArgs()
-	if err != nil {
-		panic(err)
-	}
-	err = infra_command.ValidateInput(cmd)
-	if err != nil {
-		panic(err)
+	validate := validator.New()
+	errs := validate.Struct(cmd)
+	if errs != nil {
+		panic(errs)
 	}
 
 	// run command
@@ -34,7 +28,7 @@ func main() {
 		NumberRowCollectionRepository: fileRepository,
 		NumberPresentation:            consoleTablePresentation,
 	}
-	err = handler.Handle(cmd)	
+	err := handler.Handle(cmd)	
 	if err != nil {
 		panic(err)
 	}

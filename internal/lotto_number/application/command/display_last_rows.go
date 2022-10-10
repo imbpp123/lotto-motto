@@ -21,13 +21,13 @@ type DisplayLastRowHandler struct {
 }
 
 // displays table of numbers from lotto
-func (h *DisplayLastRowHandler) Handle(cmd *DisplayLastRowCommand) error {
+func (h *DisplayLastRowHandler) Handle(cmd DisplayLastRowCommand) error {
 	collection, err := h.NumberRowCollectionRepository.LoadFromFile(cmd.Filename)
 	if err != nil {
 		return err
 	}
 
-	collection = collection.SortByDate().Slice(0, cmd.RowCount)
+	collection = collection.SortByDate().Slice(0, int(cmd.RowCount))
 
 	h.NumberPresentation.Display(collection)
 
