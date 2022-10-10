@@ -32,5 +32,8 @@ dep:
 clean:
 	rm -f ./bin/*
 
+run:
+	go run cmd/eurojackpot/main.go -rows=5 file=https://www.lotto-berlin.de/static/gamebroker_7/default/download_files/archiv_eurojackpot.zip
+
 euro: 
 	docker-compose run app bin/display_eurojackpot 10 'https://www.lotto-berlin.de/static/gamebroker_7/default/download_files/archiv_eurojackpot.zip'

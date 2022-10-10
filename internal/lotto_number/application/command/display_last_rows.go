@@ -13,6 +13,7 @@ type DisplayLastRow interface {
 type DisplayLastRowCommand struct {
 	RowCount uint `validate:"required,min=1"`
 	Filename string `validate:"required"`
+	NumberTypeAmount []int
 }
 
 type DisplayLastRowHandler struct {

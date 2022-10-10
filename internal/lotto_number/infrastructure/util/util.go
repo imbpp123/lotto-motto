@@ -1,7 +1,8 @@
-package loader
+package util
 
 import (
 	"archive/zip"
+	"encoding/csv"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,27 +11,14 @@ import (
 	"strings"
 )
 
-type HttpFileLoader struct {
-}
-
-func (tl *HttpFileLoader) loadFile(filenameUrl string) (string, error) {
-	dest := "output/archive.zip"
-
-	err := downloadFile(filenameUrl, dest)
-	if err != nil {
-		return "", err
-	}
-
-	return unzipFile(dest, "output")
-}
-
 // Download file from internet and save it to disk
-func downloadFile(filenameUrl string, destFilename string) error {
+func DownloadFile(filenameUrl string, destFilename string) error {
 	// Create blank file
 	file, err := os.Create(destFilename)
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	client := http.Client{
 		CheckRedirect: func(r *http.Request, via []*http.Request) error {
@@ -46,22 +34,41 @@ func downloadFile(filenameUrl string, destFilename string) error {
 	}
 	defer resp.Body.Close()
 
-	size, err := io.Copy(file, resp.Body)
+	_, err := io.Copy(file, resp.Body)
+	if err != nil {
 
-	defer file.Close()
-
-	fmt.Printf("Downloaded a file %s with size %d", filenameUrl, size)
+	}
 
 	return nil
 }
 
+// Read CSV file
+func ReadCsv(filename string, delimiter rune) ([][]string, error) {
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	csvReader := csv.NewReader(f)
+	csvReader.Comma = delimiter
+	records, err := csvReader.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return records, nil
+}
+
 // unzip file
-func unzipFile(zipFilename string, dstFolder string) (string, error) {
+func UnzipFile(zipFilename string, dstFolder string) (string, error) {
 	archive, err := zip.OpenReader(zipFilename)
 	if err != nil {
 		return "", err
 	}
 	defer archive.Close()
+
+	var dstFilename = ""
 
 	for _, f := range archive.File {
 		filePath := filepath.Join(dstFolder, f.Name)
@@ -94,9 +101,11 @@ func unzipFile(zipFilename string, dstFolder string) (string, error) {
 			return "", err
 		}
 
+		dstFilename = dstFile.Name()
+
 		dstFile.Close()
 		fileInArchive.Close()
 	}
 
-	return "", nil
+	return dstFilename, nil
 }

@@ -1,6 +1,9 @@
 package model
 
-import "sort"
+import (
+	"sort"
+	"time"
+)
 
 type NumberRowCollection struct {
 	rows []NumberRow
@@ -33,4 +36,31 @@ func (c *NumberRowCollection) Slice(startIndex uint, length int) *NumberRowColle
 
 	c.rows = c.rows[0:length]
 	return c
+}
+
+// [5, 2] [5]
+func CreateFromMap(data [][]string, numberTypeAmount []int) (*NumberRowCollection, error) {
+	numberRows := []NumberRow{}
+	for _, row := range data {
+		dateTime, err := time.Parse(row[2] + "-" + row[1] + "-" + row[0])
+		if err != nil {
+			return nil, err
+		}
+
+		numbers := []Number{}
+		for idx, numbers := range numberTypeAmount {
+			numbers := append(numbers, Number{
+				Value: numbers,
+				ValueType: idx,
+			})
+		}
+
+		numberRows = append(numberRows, NewNumberRow(dateTime, row[3:8], row[8:]))
+	}
+	
+	collection := NumberRowCollection{
+		rows: numberRows,
+	}
+
+	return collection, nil
 }
