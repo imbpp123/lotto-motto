@@ -21,12 +21,7 @@ func (tl *HttpFileLoader) loadFile(filenameUrl string) (string, error) {
 		return "", err
 	}
 
-	err = unzipFile(dest, "output")
-	if err != nil {
-		return "", err
-	}
-
-	return "filename", nil
+	return unzipFile(dest, "output")
 }
 
 // Download file from internet and save it to disk

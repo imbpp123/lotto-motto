@@ -21,7 +21,7 @@ func createCommandFromArgs() {
 	if err != nil {
 		panic(err)
 	}
-	filename := os.Args[3]
+	filename := os.Args[2]
 
 	cmd = command.DisplayLastRowCommand{
 		RowCount: uint(rowCount),

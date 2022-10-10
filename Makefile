@@ -16,15 +16,15 @@ lint:
 	test -z $$(gofmt -l . | grep -v vendor/) || (echo "Formatting issues found in:" $$(gofmt -l . | grep -v vendor/) && exit 1)
 
 .PHONY: all
-all: build
+all: clean build
 
 .PHONY: build-cli
-build: dep## Build the cmd binary
+build: clean dep
 	go build -trimpath -o bin/display_eurojackpot cmd/eurojackpot/main.go
 	chmod +x bin/display_eurojackpot
 
 .PHONY: dep
-dep: ## Download app dependencies
+dep: 
 	go mod tidy
 	go mod vendor
 
