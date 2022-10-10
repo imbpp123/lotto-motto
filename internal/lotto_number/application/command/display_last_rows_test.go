@@ -51,12 +51,12 @@ func TestHandle_Success(t *testing.T) {
 		Filename: "http://test.com/file.zip",
 	}
 
-	numberRow := model.NewNumberRow(time.Now().AddDate(0, 0, -1), model.Number{1, 1}) 
+	numberRow := model.NewNumberRow(time.Now().AddDate(0, 0, -1), model.Number{Value: 1, ValueType: 1}) 
 
 	collection := model.NumberRowCollection{}
-	collection.Add(model.NewNumberRow(time.Now().AddDate(0, 0, -3), model.Number{2, 2}))
+	collection.Add(model.NewNumberRow(time.Now().AddDate(0, 0, -3), model.Number{Value: 2, ValueType: 2}))
 	collection.Add(numberRow)
-	collection.Add(model.NewNumberRow(time.Now().AddDate(0, 0, -2), model.Number{3, 3}))
+	collection.Add(model.NewNumberRow(time.Now().AddDate(0, 0, -2), model.Number{Value: 3, ValueType: 3}))
 
 	mockRepository := mock_repository.NewMockNumberRowCollectionRepository(ctrl)
 	mockRepository.EXPECT().LoadFromFile("http://test.com/file.zip").Return(&collection, nil)
