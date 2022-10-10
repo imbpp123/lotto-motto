@@ -51,10 +51,12 @@ func TestHandle_Success(t *testing.T) {
 		Filename: "http://test.com/file.zip",
 	}
 
+	numberRow := model.NewNumberRow(time.Now().AddDate(0, 0, -1), model.Number{1, 1}) 
+
 	collection := model.NumberRowCollection{}
-	collection.Add(model.NewNumberRow(time.Now().Add(-1000), model.Number{1, 1}))
-	collection.Add(model.NewNumberRow(time.Now().Add(-100), model.Number{2, 2}))
-	collection.Add(model.NewNumberRow(time.Now().Add(-10), model.Number{3, 3}))
+	collection.Add(model.NewNumberRow(time.Now().AddDate(0, 0, -3), model.Number{2, 2}))
+	collection.Add(numberRow)
+	collection.Add(model.NewNumberRow(time.Now().AddDate(0, 0, -2), model.Number{3, 3}))
 
 	mockRepository := mock_repository.NewMockNumberRowCollectionRepository(ctrl)
 	mockRepository.EXPECT().LoadFromFile("http://test.com/file.zip").Return(&collection, nil)
@@ -78,5 +80,8 @@ func TestHandle_Success(t *testing.T) {
 		t.Error("Collection count should be 1")
 	}
 	// check date and number for row too!
-	// row := collection.Get(0)
+	row := collection.Get(0)
+	if row.Date != numberRow.Date {
+		t.Error("Row is wrong")
+	}
 }
