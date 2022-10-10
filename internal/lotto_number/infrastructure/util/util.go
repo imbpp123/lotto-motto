@@ -34,9 +34,9 @@ func DownloadFile(filenameUrl string, destFilename string) error {
 	}
 	defer resp.Body.Close()
 
-	_, err := io.Copy(file, resp.Body)
+	_, err = io.Copy(file, resp.Body)
 	if err != nil {
-
+		return err
 	}
 
 	return nil

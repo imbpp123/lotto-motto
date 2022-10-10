@@ -1,17 +1,28 @@
-package main_test
+package main
 
 import (
-	"testing"
+	"flag"
+	"fmt"
+	"os"
 
+	"github.com/go-playground/validator"
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/application/command"
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/infrastructure/model/repository"
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/infrastructure/presentation"
 )
 
-func TestMain_Success(t *testing.T) {
+func main() {
 	cmd := command.DisplayLastRowCommand{
-		RowCount: 5,
-		Filename: "https://www.lotto-berlin.de/static/gamebroker_7/default/download_files/archiv_eurojackpot.zip",
+		RowCount: *flag.Uint("rows", 10, "rows to show in table"),
+		Filename: *flag.String("file", "http://example.com", "zip archive with history in CSV format"),
+		NumberTypeAmount: []int{6},
+	}
+
+	validate := validator.New()
+	errs := validate.Struct(cmd)
+	if errs != nil {
+		fmt.Println(errs) 
+		os.Exit(1)
 	}
 
 	// run command
@@ -24,6 +35,7 @@ func TestMain_Success(t *testing.T) {
 
 	err := handler.Handle(cmd)	
 	if err != nil {
-		panic(err)
+		fmt.Println(err) 
+		os.Exit(1)
 	}
 }

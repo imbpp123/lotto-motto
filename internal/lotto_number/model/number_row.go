@@ -7,7 +7,7 @@ type NumberRow struct {
 	Date time.Time
 }
 
-func NewNumberRow(rowDate time.Time, numbers ...Number) NumberRow {
+func NewNumberRow(rowDate time.Time, numbers []Number) NumberRow {
 	return NumberRow{
 		numbers,
 		rowDate,

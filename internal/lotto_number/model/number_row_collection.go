@@ -2,6 +2,7 @@ package model
 
 import (
 	"sort"
+	"strconv"
 	"time"
 )
 
@@ -38,24 +39,60 @@ func (c *NumberRowCollection) Slice(startIndex uint, length int) *NumberRowColle
 	return c
 }
 
-// [5, 2] [5]
-func CreateFromMap(data [][]string, numberTypeAmount []int) (*NumberRowCollection, error) {
-	numberRows := []NumberRow{}
-	for _, row := range data {
-		dateTime, err := time.Parse(row[2] + "-" + row[1] + "-" + row[0])
-		if err != nil {
-			return nil, err
-		}
+func createDateFromRow(row []string) (time.Time, error) {
+	year, err := strconv.Atoi(row[2])
+	if err != nil {
+		return time.Time{}, err
+	}
 
-		numbers := []Number{}
-		for idx, numbers := range numberTypeAmount {
-			numbers := append(numbers, Number{
-				Value: numbers,
+	month, err := strconv.Atoi(row[1])
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	day, err := strconv.Atoi(row[0])
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC), nil
+}
+
+func createNumberArray(row []string, numberTypeAmount []int) ([]Number, error) {
+	numbers := []Number{}
+
+	for idx, amount := range numberTypeAmount {
+		for i := 0; i < amount; i++ {
+			parsedNumber, err := strconv.Atoi(row[i])
+			if err != nil {
+				return nil, err
+			}			
+
+			numbers = append(numbers, Number{
+				Value: parsedNumber,
 				ValueType: idx,
 			})
 		}
+	}
 
-		numberRows = append(numberRows, NewNumberRow(dateTime, row[3:8], row[8:]))
+	return numbers, nil
+}
+
+func CreateFromStringMap(data [][]string, numberTypeAmount []int) (NumberRowCollection, error) {
+	numberRows := []NumberRow{}
+
+	for _, row := range data {
+		dateTime, err := createDateFromRow(row)
+		if err != nil {
+			return NumberRowCollection{}, err
+		}
+
+		numbers, err := createNumberArray(row[3:], numberTypeAmount)
+		if err != nil {
+			return NumberRowCollection{}, err
+		}
+
+		numberRows = append(numberRows, NewNumberRow(dateTime, numbers))
 	}
 	
 	collection := NumberRowCollection{
