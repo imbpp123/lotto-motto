@@ -30,7 +30,7 @@ func (c *NumberRowCollection) SortByDate() *NumberRowCollection {
 	return c
 }
 
-func (c *NumberRowCollection) Slice(startIndex uint, length int) *NumberRowCollection {
+func (c *NumberRowCollection) Slice(startIndex int, length int) *NumberRowCollection {
 	if length > len(c.rows) {
 		return c
 	}
@@ -66,10 +66,10 @@ func createNumberArray(row []string, numberTypeAmount []int) ([]Number, error) {
 			parsedNumber, err := strconv.Atoi(row[i])
 			if err != nil {
 				return nil, err
-			}			
+			}
 
 			numbers = append(numbers, Number{
-				Value: parsedNumber,
+				Value:     parsedNumber,
 				ValueType: idx,
 			})
 		}
@@ -78,26 +78,26 @@ func createNumberArray(row []string, numberTypeAmount []int) ([]Number, error) {
 	return numbers, nil
 }
 
-func CreateFromStringMap(data [][]string, numberTypeAmount []int) (NumberRowCollection, error) {
+func CreateFromStringMap(data [][]string, numberTypeAmount []int) (*NumberRowCollection, error) {
 	numberRows := []NumberRow{}
 
 	for _, row := range data {
 		dateTime, err := createDateFromRow(row)
 		if err != nil {
-			return NumberRowCollection{}, err
+			return nil, err
 		}
 
 		numbers, err := createNumberArray(row[3:], numberTypeAmount)
 		if err != nil {
-			return NumberRowCollection{}, err
+			return nil, err
 		}
 
 		numberRows = append(numberRows, NewNumberRow(dateTime, numbers))
 	}
-	
+
 	collection := NumberRowCollection{
 		rows: numberRows,
 	}
 
-	return collection, nil
+	return &collection, nil
 }

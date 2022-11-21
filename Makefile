@@ -2,15 +2,6 @@
 -include .env
 export
 
-run:
-	go run cmd/main.go
-
-up:
-	docker-compose up -d
-
-down:
-	docker-compose down -v --remove-orphans
-
 .PHONY: lint
 lint: 
 	test -z $$(gofmt -l . | grep -v vendor/) || (echo "Formatting issues found in:" $$(gofmt -l . | grep -v vendor/) && exit 1)
@@ -20,10 +11,8 @@ all: clean build
 
 .PHONY: build-cli
 build: clean dep
-	go build -trimpath -o bin/display_eurojackpot cmd/eurojackpot/main.go
-	go build -trimpath -o bin/display_6aus49 cmd/6aus49/main.go
-	chmod +x bin/display_eurojackpot
-	chmod +x bin/display_6aus49
+	go build -trimpath -o bin/lotto cmd/main.go
+	chmod +x bin/lotto
 
 .PHONY: dep
 dep: 
