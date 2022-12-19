@@ -11,8 +11,10 @@ all: clean build
 
 .PHONY: build-cli
 build: clean dep
-	go build -trimpath -o bin/lotto cmd/main.go
-	chmod +x bin/lotto
+	go build -trimpath -o bin/lotto_6aus49 cmd/lotto6aus49/main.go
+	go build -trimpath -o bin/lotto_eurojackpot cmd/lottoEuroJackpot/main.go
+	chmod +x bin/lotto_6aus49
+	chmod +x bin/lotto_eurojackpot
 
 .PHONY: dep
 dep: 

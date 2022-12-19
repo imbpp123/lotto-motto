@@ -15,6 +15,26 @@ func NewNumPeriodCollection(periods []*NumPeriod) *NumPeriodCollection {
 	return &NumPeriodCollection{periods}
 }
 
+func NewNumPeriodCollectionByParts(parts int, min int, max int) *NumPeriodCollection {
+	step := (max - min + 1) / parts
+
+	collection := NumPeriodCollection{}
+
+	currentMin := min
+	for {
+		period := NewNumPeriod(currentMin, currentMin+step-1)
+		collection.periods = append(collection.periods, period)
+
+		if period.max >= max {
+			period.max = max
+			break
+		}
+		currentMin = period.max + 1
+	}
+
+	return &collection
+}
+
 func (npa *NumPeriodCollection) clearData() {
 	for _, num := range npa.periods {
 		num.ClearData()
