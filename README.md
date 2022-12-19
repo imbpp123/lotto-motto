@@ -2,6 +2,11 @@
 
 Simple project to show LOTTO results
 
+How to use:
+1. Download code
+2. `make all`
+3. You are ready to go with `bin/lotto_eurojackpot` or `bin/lotto_6aus49`
+
 I started this project to gain more experience with GoLang. How it works?
 
 1. It downloads file with results from lotto berlin website
