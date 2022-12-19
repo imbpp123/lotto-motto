@@ -11,7 +11,7 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	dataProvider := data_provider.NewLotto6Aus49(3)
+	dataProvider := data_provider.NewLotto6Aus49(4)
 	rows, err := dataProvider.GetData()
 	if err != nil {
 		panic(err)
@@ -20,7 +20,7 @@ func main() {
 	handler := command.RandomWeightCommandHandler{}
 
 	cmd := command.RandomWeightCommand{
-		Parts:               5,
+		Parts:               4,
 		Min:                 1,
 		Max:                 49,
 		GenerateNumberCount: 6,

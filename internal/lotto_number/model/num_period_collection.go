@@ -48,6 +48,7 @@ func (npa *NumPeriodCollection) incQty(num int) {
 }
 
 func (npa *NumPeriodCollection) SetData(data [][]int) {
+	fmt.Println("Data:")
 	for _, row := range data {
 		for _, cell := range row {
 			npa.incQty(cell)
@@ -59,7 +60,7 @@ func (npa *NumPeriodCollection) CalculateWeight() error {
 	qtySumm := 0
 
 	for _, numPeriod := range npa.periods {
-		qtySumm += numPeriod.qty
+		qtySumm += numPeriod.Qty()
 	}
 
 	if qtySumm == 0 {
@@ -68,6 +69,7 @@ func (npa *NumPeriodCollection) CalculateWeight() error {
 
 	for _, numPeriod := range npa.periods {
 		numPeriod.weight = int(math.Round(float64(numPeriod.qty * 100 / qtySumm)))
+		fmt.Printf("Period min=%d max=%d weight=%d\n", numPeriod.min, numPeriod.max, numPeriod.weight)
 	}
 
 	return nil

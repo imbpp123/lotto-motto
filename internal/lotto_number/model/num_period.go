@@ -15,9 +15,13 @@ func (np *NumPeriod) ClearData() {
 }
 
 func (np *NumPeriod) IncQty(num int) {
-	if num > np.min && num < np.max {
+	if num >= np.min && num <= np.max {
 		np.qty++
 	}
+}
+
+func (np *NumPeriod) Qty() int {
+	return np.qty
 }
 
 func (np *NumPeriod) RandomNumber() int {
