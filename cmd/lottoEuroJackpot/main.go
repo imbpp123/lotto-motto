@@ -4,14 +4,14 @@ import (
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/application/command"
 	"github.com/imbpp123/lotto_motto/internal/lotto_number/infrastructure/data_provider"
 	presentation2 "github.com/imbpp123/lotto_motto/internal/lotto_number/infrastructure/presentation"
+	"hash/maphash"
 	"math/rand"
-	"time"
 )
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(int64(new(maphash.Hash).Sum64()))
 
-	dataProvider := data_provider.NewEuroJackpot(3)
+	dataProvider := data_provider.NewEuroJackpot(10)
 	rows, err := dataProvider.GetData()
 	if err != nil {
 		panic(err)

@@ -3,8 +3,8 @@ package model
 import (
 	"errors"
 	"fmt"
-	"math"
 	"math/rand"
+	"sort"
 )
 
 type NumPeriodCollection struct {
@@ -35,6 +35,12 @@ func NewNumPeriodCollectionByParts(parts int, min int, max int) *NumPeriodCollec
 	return &collection
 }
 
+func (npa *NumPeriodCollection) SortByWeight() {
+	sort.Slice(npa.periods, func(i, j int) bool {
+		return npa.periods[i].weight > npa.periods[j].weight
+	})
+}
+
 func (npa *NumPeriodCollection) clearData() {
 	for _, num := range npa.periods {
 		num.ClearData()
@@ -57,18 +63,8 @@ func (npa *NumPeriodCollection) SetData(data [][]int) {
 }
 
 func (npa *NumPeriodCollection) CalculateWeight() error {
-	qtySumm := 0
-
 	for _, numPeriod := range npa.periods {
-		qtySumm += numPeriod.Qty()
-	}
-
-	if qtySumm == 0 {
-		return errors.New("QTY Sum can not be 0")
-	}
-
-	for _, numPeriod := range npa.periods {
-		numPeriod.weight = int(math.Round(float64(numPeriod.qty * 100 / qtySumm)))
+		numPeriod.weight = numPeriod.qty
 		fmt.Printf("Period min=%d max=%d weight=%d\n", numPeriod.min, numPeriod.max, numPeriod.weight)
 	}
 
@@ -86,6 +82,7 @@ func (npa *NumPeriodCollection) RandPeriod() (*NumPeriod, error) {
 	}
 
 	randValue := rand.Intn(weightSum)
+	fmt.Printf("Random number generation: rand=%d total_weight=%d\n", randValue, weightSum)
 
 	for _, periodStruct := range npa.periods {
 		if randValue-periodStruct.weight < 0 {
