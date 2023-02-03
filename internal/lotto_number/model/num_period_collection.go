@@ -11,10 +11,6 @@ type NumPeriodCollection struct {
 	periods []*NumPeriod
 }
 
-func NewNumPeriodCollection(periods []*NumPeriod) *NumPeriodCollection {
-	return &NumPeriodCollection{periods}
-}
-
 func NewNumPeriodCollectionByParts(parts int, min int, max int) *NumPeriodCollection {
 	step := (max - min + 1) / parts
 

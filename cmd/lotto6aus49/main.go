@@ -11,7 +11,7 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	dataProvider := data_provider.NewLotto6Aus49(4)
+	dataProvider := data_provider.NewLotto6Aus49(2)
 	rows, err := dataProvider.GetData()
 	if err != nil {
 		panic(err)

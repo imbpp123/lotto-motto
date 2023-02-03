@@ -11,7 +11,7 @@ import (
 func main() {
 	rand.Seed(int64(new(maphash.Hash).Sum64()))
 
-	dataProvider := data_provider.NewEuroJackpot(10)
+	dataProvider := data_provider.NewEuroJackpot(3)
 	rows, err := dataProvider.GetData()
 	if err != nil {
 		panic(err)
