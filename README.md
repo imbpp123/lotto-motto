@@ -2,6 +2,8 @@
 
 Simple project to show LOTTO results
 
+I try to use DDD here. This is my code challenge.
+
 How to use:
 1. Download code
 2. `make all`
