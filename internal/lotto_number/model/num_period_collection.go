@@ -11,10 +11,6 @@ type NumPeriodCollection struct {
 	periods []*NumPeriod
 }
 
-func NewNumPeriodCollection(periods []*NumPeriod) *NumPeriodCollection {
-	return &NumPeriodCollection{periods}
-}
-
 func NewNumPeriodCollectionByParts(parts int, min int, max int) *NumPeriodCollection {
 	step := (max - min + 1) / parts
 
@@ -39,12 +35,6 @@ func (npa *NumPeriodCollection) SortByWeight() {
 	sort.Slice(npa.periods, func(i, j int) bool {
 		return npa.periods[i].weight > npa.periods[j].weight
 	})
-}
-
-func (npa *NumPeriodCollection) clearData() {
-	for _, num := range npa.periods {
-		num.ClearData()
-	}
 }
 
 func (npa *NumPeriodCollection) incQty(num int) {
