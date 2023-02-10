@@ -37,12 +37,6 @@ func (npa *NumPeriodCollection) SortByWeight() {
 	})
 }
 
-func (npa *NumPeriodCollection) clearData() {
-	for _, num := range npa.periods {
-		num.ClearData()
-	}
-}
-
 func (npa *NumPeriodCollection) incQty(num int) {
 	for _, numPeriod := range npa.periods {
 		numPeriod.IncQty(num)

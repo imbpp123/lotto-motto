@@ -11,35 +11,23 @@ import (
 	"strings"
 )
 
-type HttpZipCsvReader struct {
+type HttpZipReader interface {
+	GetData(rows int) ([][]int, error)
+}
+
+type httpZipCsvReader struct {
 	fileUrl     string
 	csvFilename string
-	rowCount    int
-	numberStart int
-	numberStop  int
 }
 
-func NewLotto6Aus49(rowCount int) *HttpZipCsvReader {
-	return &HttpZipCsvReader{
-		fileUrl:     "https://www.lotto-berlin.de/static/gamebroker_7/default/download_files/archiv_lotto.zip",
-		csvFilename: "lotto_6aus49_ab_02.12.2000.txt",
-		rowCount:    rowCount,
-		numberStart: 3,
-		numberStop:  9,
+func NewHttpZipReader(url string, filename string) HttpZipReader {
+	return &httpZipCsvReader{
+		fileUrl:     url,
+		csvFilename: filename,
 	}
 }
 
-func NewEuroJackpot(rowCount int) *HttpZipCsvReader {
-	return &HttpZipCsvReader{
-		fileUrl:     "https://www.lotto-berlin.de/static/gamebroker_7/default/download_files/archiv_eurojackpot.zip",
-		csvFilename: "eurojackpot.txt",
-		rowCount:    rowCount,
-		numberStart: 3,
-		numberStop:  10,
-	}
-}
-
-func (p *HttpZipCsvReader) GetData() ([][]int, error) {
+func (p *httpZipCsvReader) GetData(rows int) ([][]int, error) {
 	resp, err := http.Get(p.fileUrl)
 	if err != nil {
 		return nil, fmt.Errorf("can't download file: %w", err)
@@ -78,11 +66,11 @@ func (p *HttpZipCsvReader) GetData() ([][]int, error) {
 		}
 	}
 
-	return p.getProperRecords(records, p.rowCount)
+	return p.getProperRecords(records, rows)
 }
 
-func (p *HttpZipCsvReader) getProperRecords(data [][]string, count int) ([][]int, error) {
-	records := [][]int{}
+func (p *httpZipCsvReader) getProperRecords(data [][]string, count int) ([][]int, error) {
+	var records [][]int
 
 	length := len(data)
 	for i := length - 1; i > length-count-1; i-- {
@@ -90,13 +78,13 @@ func (p *HttpZipCsvReader) getProperRecords(data [][]string, count int) ([][]int
 		if err != nil {
 			return nil, fmt.Errorf("can't convert string to int: %w", err)
 		}
-		records = append(records, dataInt[p.numberStart:p.numberStop])
+		records = append(records, dataInt)
 	}
 
 	return records, nil
 }
 
-func (p *HttpZipCsvReader) sliceAtoi(sa []string) ([]int, error) {
+func (p *httpZipCsvReader) sliceAtoi(sa []string) ([]int, error) {
 	si := make([]int, 0, len(sa))
 	for _, a := range sa {
 		number := strings.TrimSpace(a)
